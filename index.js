@@ -18,11 +18,11 @@ async function processLineByLine() {
   
   let processedFiles = 0;
   for (const file of files) {
-    if (!fs.existsSync('./processed_files.txt')) {
-      fs.writeFileSync('./processed_files.txt', '');
+    if (!fs.existsSync('./result/processed_files.txt')) {
+      fs.writeFileSync('./result/processed_files.txt', '');
     }
 
-    if (fs.readFileSync('./processed_files.txt', 'utf8').includes(file)) {
+    if (fs.readFileSync('./result/processed_files.txt', 'utf8').includes(file)) {
       processedFiles++;
       console.log(`Processed ${processedFiles} out of ${files.length} files`);
       continue;
@@ -66,16 +66,16 @@ async function processLineByLine() {
     processedFiles++;
     console.log(`Processed ${processedFiles} out of ${files.length} files`);
     
-    fs.appendFileSync('./processed_files.txt', `${file}\n`);
+    fs.appendFileSync('./result/processed_files.txt', `${file}\n`);
 
     const result = Object.values(stats);
     // result.sort((a, b) => b.count - a.count);
-    fs.writeFileSync('./stats.json', JSON.stringify(stats));
+    fs.writeFileSync('./result/stats.json', JSON.stringify(stats));
   }
 
   const result = Object.values(stats);
   result.sort((a, b) => b.count - a.count);
-  fs.writeFileSync('./result.txt', result.map(item => `${item.status} - ${item.count} - ${item.method} - ${item.url}`).join('\n'));
+  fs.writeFileSync('./result/result.txt', result.map(item => `${item.status} - ${item.count} - ${item.method} - ${item.url}`).join('\n'));
 }
 
 processLineByLine();
