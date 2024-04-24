@@ -9,7 +9,7 @@ async function processLineByLine() {
   
   let processedFiles = 0;
   for (const file of files) {
-    const fileStream = fs.createReadStream(`../backend/unpacked/aws-logs/${file}`);
+    const fileStream = fs.createReadStream(`../backend/unpacked/${file}`);
     // const logFormat = '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
     // const parseLine = nginxLogParser(logFormat);
   
