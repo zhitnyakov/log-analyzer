@@ -65,7 +65,7 @@ async function processLineByLine() {
 
   const result = Object.values(stats);
   result.sort((a, b) => b.count - a.count);
-  fs.writeFileSync('/Users/deniszhitnyakov/Downloads/logs/result.txt', result.map(item => `${item.count} - ${item.method} - ${item.status} - ${item.url}`).join('\n'));
+  fs.writeFileSync('./result.txt', result.map(item => `${item.count} - ${item.method} - ${item.status} - ${item.url}`).join('\n'));
   // console.log(result);
 }
 
