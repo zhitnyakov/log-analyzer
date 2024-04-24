@@ -18,6 +18,10 @@ async function processLineByLine() {
   
   let processedFiles = 0;
   for (const file of files) {
+    if (!fs.existsSync('./result')) {
+      fs.mkdirSync('./result');
+    }
+    
     if (!fs.existsSync('./result/processed_files.txt')) {
       fs.writeFileSync('./result/processed_files.txt', '');
     }
