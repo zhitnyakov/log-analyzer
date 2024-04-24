@@ -26,7 +26,7 @@ async function processLineByLine() {
       const parsedLine = line.split(' ');
       // console.log(parsedLine);
       
-      console.log(parsedLine[13]);
+      // console.log(parsedLine[13]);
       const params = { 
         method: parsedLine[12],
         url: new URL(parsedLine[13]).pathname,
@@ -47,9 +47,11 @@ async function processLineByLine() {
           count: 1
         };
       }
-      processedFiles++;
-      console.log(`Processed ${processedFiles} out of ${files.length} files`);
+      
     }
+
+    processedFiles++;
+    console.log(`Processed ${processedFiles} out of ${files.length} files`);
   }
   
   
