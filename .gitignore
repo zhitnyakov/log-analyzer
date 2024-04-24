@@ -1,0 +1,5 @@
+aws-logs
+logs
+node_modules
+*.log
+result.txt
