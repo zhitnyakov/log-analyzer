@@ -4,11 +4,11 @@ const nginxLogParser = require('nginx-log-parser');
 const crypto = require('crypto');
 
 async function processLineByLine() {
-  files = fs.readdirSync('aws-logs').filter(file => file.endsWith('.log'));
+  files = fs.readdirSync('../backend/unpacked/').filter(file => file.endsWith('.log'));
   const stats = {};
   
   for (const file of files) {
-    const fileStream = fs.createReadStream(`aws-logs/${file}`);
+    const fileStream = fs.createReadStream(`../backend/unpacked/aws-logs/${file}`);
     // const logFormat = '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
     // const parseLine = nginxLogParser(logFormat);
   
