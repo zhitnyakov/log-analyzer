@@ -29,9 +29,15 @@ async function processLineByLine() {
       // console.log(parsedLine[13]);
       const params = { 
         method: parsedLine[12],
-        url: new URL(parsedLine[13]).pathname,
+        url: parsedLine[13],
         status: parsedLine[8],
       };
+
+      try {
+        params.url = new URL(params.url).pathname;
+      } catch (e) {
+        // console.log(e);
+      }
       // const url = new URL(params.url);
       // const path = url.pathname;
       // params.url = path;
