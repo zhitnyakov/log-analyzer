@@ -4,30 +4,39 @@ const nginxLogParser = require('nginx-log-parser');
 const crypto = require('crypto');
 
 async function processLineByLine() {
-  files = fs.readdirSync('../backend/unpacked/').filter(file => file.endsWith('.log'));
-  const stats = {};
+  const dir = '../backend/unpacked'
+  // const dir = './aws-logs';
+  files = fs.readdirSync(dir).filter(file => file.endsWith('.log'));
+
+  let stats = {};
+  try {
+    const statsData = fs.readFileSync('./stats.json', 'utf8');
+    stats = JSON.parse(statsData);
+  } catch (error) {
+    // console.error('Error reading or parsing stats.json:', error);
+  }
   
   let processedFiles = 0;
   for (const file of files) {
-    // if(processedFiles === 100) break;  
-    const fileStream = fs.createReadStream(`../backend/unpacked/${file}`);
-    // const logFormat = '$http_x_forwarded_for - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
-    // const parseLine = nginxLogParser(logFormat);
+    if (!fs.existsSync('./processed_files.txt')) {
+      fs.writeFileSync('./processed_files.txt', '');
+    }
+
+    if (fs.readFileSync('./processed_files.txt', 'utf8').includes(file)) {
+      processedFiles++;
+      console.log(`Processed ${processedFiles} out of ${files.length} files`);
+      continue;
+    }
+
+    const fileStream = fs.createReadStream(`${dir}/${file}`);
   
     const rl = readline.createInterface({
       input: fileStream,
       crlfDelay: Infinity
     });
   
-    // let lineCount = 0;
-  
     for await (const line of rl) {
-      // if (lineCount === 100) break;
-  
       const parsedLine = line.split(' ');
-      // console.log(parsedLine);
-      
-      // console.log(parsedLine[13]);
       const params = { 
         method: parsedLine[12],
         url: parsedLine[13],
@@ -39,9 +48,6 @@ async function processLineByLine() {
       } catch (e) {
         // console.log(e);
       }
-      // const url = new URL(params.url);
-      // const path = url.pathname;
-      // params.url = path;
       const key = crypto.createHash('md5').update(`${params.url}-${params.status}-${params.method}`).digest('hex');
   
       if (stats[key]) {
@@ -59,14 +65,17 @@ async function processLineByLine() {
 
     processedFiles++;
     console.log(`Processed ${processedFiles} out of ${files.length} files`);
+    
+    fs.appendFileSync('./processed_files.txt', `${file}\n`);
+
+    const result = Object.values(stats);
+    // result.sort((a, b) => b.count - a.count);
+    fs.writeFileSync('./stats.json', JSON.stringify(stats));
   }
-  
-  
 
   const result = Object.values(stats);
   result.sort((a, b) => b.count - a.count);
-  fs.writeFileSync('./result.txt', result.map(item => `${item.count} - ${item.method} - ${item.status} - ${item.url}`).join('\n'));
-  // console.log(result);
+  fs.writeFileSync('./result.txt', result.map(item => `${item.status} - ${item.count} - ${item.method} - ${item.url}`).join('\n'));
 }
 
 processLineByLine();
